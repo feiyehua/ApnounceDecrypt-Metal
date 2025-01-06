@@ -237,8 +237,3 @@ kernel void blockSha1(device const uint32_t* mes1 [[buffer(0)]],
     }
 }
 
-////start是给定的起始点：前16bit
-//void cal(uint32_t start,device uint64_t* result,device uint32_t* calcBuffer)
-//{
-//    
-//}
