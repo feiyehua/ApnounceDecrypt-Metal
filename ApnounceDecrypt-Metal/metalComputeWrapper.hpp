@@ -13,6 +13,7 @@
 const unsigned int ARRAY_LENGTH = (1 << 7) * (1 << 16); //(1<<23);
 // 不是，哥们！苹果你做出来了这么豪华的动画，居然识别不出来我写了个数组越界？硬控一早上……
 const unsigned int BUFFER_SIZE = ARRAY_LENGTH * sizeof(uint32_t);
+const unsigned int GRID_SIZE = 1<<14;
 
 class metalComputeWrapper {
   public:

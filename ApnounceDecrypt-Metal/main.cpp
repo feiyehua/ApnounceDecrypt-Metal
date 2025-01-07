@@ -37,12 +37,13 @@ int main(int argc, const char *argv[]) {
     std::cout << argv[0] << std::endl;
     auto fp = fopen("CurrentProgress.txt", "r+");
     if (fp == NULL)
-        exit(-1);
+    {
+        fp = fopen("CurrentProgress.txt", "w+");
+    }
     if (fscanf(fp, "%llu", &start) != 1) {
         start = 0;
     }
-    start = 0;
-    for (uint64_t i = start; i <= start + 1000; i++) {
+    for (uint64_t i = start; i <= start + 10000; i++) {
         // Time the compute phase.
         auto start = std::chrono::steady_clock::now();
 
@@ -58,7 +59,7 @@ int main(int argc, const char *argv[]) {
         std::cout
             << "Computation completed in "
             << std::chrono::duration<double, std::milli>(delta_time).count()
-            << " ms for sha1 of count " << (1 << 16) << ".\n";
+            << " ms for sha1 of count " << (1 << 30) << ".\n";
         if (hostResult != 0) {
             auto fpResult = fopen("Result.txt", "w");
             fprintf(fpResult, "%llu\n", hostResult);

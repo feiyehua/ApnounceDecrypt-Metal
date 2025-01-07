@@ -45,8 +45,6 @@ void metalComputeWrapper::initWithDevice(MTL::Device *device) {
 
 void metalComputeWrapper::prepareData() {
     // Allocate three buffers to hold our initial data and the result.
-    calcBuffer =
-        mDevice->newBuffer(BUFFER_SIZE, MTL::ResourceStorageModeShared);
     result =
         mDevice->newBuffer(sizeof(uint64_t), MTL::ResourceStorageModeShared);
     mStart =
@@ -86,19 +84,16 @@ void metalComputeWrapper::encodeComputeCommand(
     computeEncoder->setComputePipelineState(mComputeFunctionPSO);
     computeEncoder->setBuffer(mStart, 0, 0);
     computeEncoder->setBuffer(result, 0, 1);
-    computeEncoder->setBuffer(calcBuffer, 0, 2);
 
-    MTL::Size gridSize = MTL::Size((1 << 14), 1, 1);
-    //    printf("%d",mComputeFunctionPSO->threadExecutionWidth());
-    // Calculate a threadgroup size.
-    //    NS::UInteger threadGroupSize =
-    //    mComputeFunctionPSO->maxTotalThreadsPerThreadgroup();
-    //    printf("%lu",threadGroupSize);
-    //    if (threadGroupSize > ARRAY_LENGTH)
-    //    {
-    //        threadGroupSize = ARRAY_LENGTH;
-    //    }
-    MTL::Size threadgroupSize = MTL::Size((1 << 9), 1, 1);
+    MTL::Size gridSize = MTL::Size(GRID_SIZE, 1, 1);
+    
+    //     Calculate a threadgroup size.
+    NS::UInteger threadGroupSize =
+        mComputeFunctionPSO->maxTotalThreadsPerThreadgroup();
+    if (threadGroupSize > GRID_SIZE) {
+        threadGroupSize = GRID_SIZE;
+    }
+    MTL::Size threadgroupSize = MTL::Size(threadGroupSize, 1, 1);
 
     // Encode the compute command.
     computeEncoder->dispatchThreads(gridSize, threadgroupSize);
