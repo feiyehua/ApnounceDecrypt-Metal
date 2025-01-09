@@ -49,12 +49,17 @@ void metalComputeWrapper::prepareData() {
         mDevice->newBuffer(sizeof(uint64_t), MTL::ResourceStorageModeShared);
     mStart =
         mDevice->newBuffer(sizeof(uint32_t), MTL::ResourceStorageModeShared);
+    mStart2 =
+        mDevice->newBuffer(sizeof(uint32_t), MTL::ResourceStorageModeShared);
 }
 
-void metalComputeWrapper::sendComputeCommand(uint32_t startLoc) {
+void metalComputeWrapper::sendComputeCommand(uint32_t startLoc,
+                                             uint32_t startLoc2) {
     // 为当前操作写入起始点
     uint32_t *deviceStart = (uint32_t *)mStart->contents();
+    uint32_t *deviceStart2 = (uint32_t *)mStart2->contents();
     *deviceStart = startLoc;
+    *deviceStart2 = startLoc2;
     // Create a command buffer to hold commands.
     MTL::CommandBuffer *commandBuffer = mCommandQueue->commandBuffer();
     assert(commandBuffer != nullptr);
@@ -84,9 +89,10 @@ void metalComputeWrapper::encodeComputeCommand(
     computeEncoder->setComputePipelineState(mComputeFunctionPSO);
     computeEncoder->setBuffer(mStart, 0, 0);
     computeEncoder->setBuffer(result, 0, 1);
-
-    MTL::Size gridSize = MTL::Size(GRID_SIZE, 1, 1);
+    computeEncoder->setBuffer(mStart2, 0, 2);
     
+    MTL::Size gridSize = MTL::Size(GRID_SIZE, 1, 1);
+
     //     Calculate a threadgroup size.
     NS::UInteger threadGroupSize =
         mComputeFunctionPSO->maxTotalThreadsPerThreadgroup();

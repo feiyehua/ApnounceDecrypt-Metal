@@ -12,8 +12,8 @@
 #include <metal_stdlib>
 using namespace metal;
 
-//constant uint32_t target[5]={0xabc21d3f,0x9d5d98ec,0xae9f3d51,0x44752901,0x71f2bbed};
-constant uint32_t target[5]={0xfcdfc642,0x15aa290c,0x42ef66bc,0x6bd3c2ea,0xb74af5fd};
+constant uint32_t target[5]={0xabc21d3f,0x9d5d98ec,0xae9f3d51,0x44752901,0x71f2bbed};
+//constant uint32_t target[6]={0xff2aadcd,0xb27c3db1,0xd8829b33,0xd95a9fdf,0x4dc568cb,0xb74af5fd};
 
 // 32-bit rotate
 inline uint32_t ROT(uint32_t x, int n) {
@@ -271,11 +271,11 @@ uint64_t getSha1(device const uint32_t* mes1,uint32_t mes2)
 //每个block的计算函数：确定消息的前48bit，计算最后16bit对应的hash
 kernel void blockSha1(device const uint32_t* mes1 [[buffer(0)]],
                       device uint64_t* result [[buffer(1)]],
-                      device uint32_t* calcBuffer [[buffer(2)]],
+                      device uint32_t* mes2Offset [[buffer(2)]],
                       uint index [[thread_position_in_grid]],
                       uint thread_position_in_threadgroup [[ thread_position_in_threadgroup ]])
 {
-    uint32_t mes2=index;
+    uint32_t mes2=index+((*mes2Offset)<<14);
     //printf("%d\n",mes2);
     for(int i=0;i<(1<<16);i++)
     {

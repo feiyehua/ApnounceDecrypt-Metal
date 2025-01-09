@@ -30,10 +30,11 @@ class metalComputeWrapper {
     MTL::Buffer *result;
     MTL::Buffer *calcBuffer;
     MTL::Buffer *mStart;
+    MTL::Buffer *mStart2;
 
     void initWithDevice(MTL::Device *);
     void prepareData();
-    void sendComputeCommand(uint32_t mStart);
+    void sendComputeCommand(uint32_t mStart,uint32_t startLoc2);
     uint64_t getReasult();
 
   private:
